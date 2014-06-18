@@ -7,20 +7,12 @@
 
 include_recipe "build-essential"
 include_recipe "git"
+include_recipe "yasm"
 
 libfdk_aac_packages.each do |pkg|
     package pkg do
         action :purge
     end
-end
-
-yasm_package = value_for_platform(
-    [ "ubuntu" ] => { "default" => "yasm" },
-    "default" => "yasm"
-)
-
-package yasm_package do
-    action :upgrade
 end
 
 libtool = value_for_platform(
@@ -42,8 +34,8 @@ package autoconf do
 end
 
 git "#{Chef::Config[:file_cache_path]}/libfdk_aac" do
-    repository node[:libfdk_aac][:git_repository]
-    reference node[:libfdk_aac][:git_revision]
+    repository node['libfdk_aac']['git_repository']
+    reference node['libfdk_aac']['git_revision']
     action :sync
     notifies :run, "bash[compile_libfdk_aac]", :immediately
 end
@@ -55,7 +47,7 @@ template "#{Chef::Config[:file_cache_path]}/libfdk_aac-compiled_with_flags" do
     group "root"
     mode 0600
     variables(
-        :compile_flags => node[:libfdk_aac][:compile_flags]
+        :compile_flags => node['libfdk_aac']['compile_flags']
     )
     notifies :run, "bash[compile_libfdk_aac]", :immediately
 end
@@ -64,7 +56,7 @@ bash "compile_libfdk_aac" do
     cwd "#{Chef::Config[:file_cache_path]}/libfdk_aac"
     code <<-EOH
         autoreconf -fiv
-        ./configure --prefix=#{node[:libfdk_aac][:prefix]} #{node[:libfdk_aac][:compile_flags].join(' ')}
+        ./configure --prefix=#{node['libfdk_aac']['prefix']} #{node['libfdk_aac']['compile_flags'].join(' ')}
         make clean && make && make install
     EOH
     action :nothing
