@@ -5,16 +5,22 @@
 # Copyright 2014, Escape Studios
 #
 
-module Libfdk_aac
+# LibfdkAac module
+module LibfdkAac
+  # helpers module
   module Helpers
     def libfdk_aac_packages
       [
-        "fdk-aac"
+        'fdk-aac'
       ]
     end
   end
 end
 
-class Chef::Recipe
-  include Libfdk_aac::Helpers
+# Chef class
+class Chef
+  # Recipe class
+  class Recipe
+    include LibfdkAac::Helpers
+  end
 end

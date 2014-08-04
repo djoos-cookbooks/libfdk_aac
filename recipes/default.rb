@@ -6,8 +6,8 @@
 #
 
 case node['libfdk_aac']['install_method']
-    when :source
-        include_recipe "libfdk_aac::source"
-    when :package
-        include_recipe "libfdk_aac::package"
+when :source
+  include_recipe 'libfdk_aac::source'
+when :package
+  include_recipe 'libfdk_aac::package'
 end
